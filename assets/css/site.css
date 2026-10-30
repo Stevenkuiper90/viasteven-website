@@ -108,7 +108,7 @@ p{margin:0}
 .split:has(.portrait){align-items:center}
 .prose h2{font-size:clamp(1.5rem,3vw,2rem);margin-top:24px}
 .prose ul{margin:0;padding-left:20px;display:grid;gap:8px}
-.portrait{border-radius:20px;aspect-ratio:3/4;object-fit:cover;object-position:50% 15%;width:100%}
+.portrait{max-width:320px;border-radius:20px;aspect-ratio:3/4;object-fit:cover;object-position:50% 15%;width:100%}
 .facts{display:grid;gap:18px}
 .facts dt{font-weight:700}
 .facts dd{margin:4px 0 0;color:var(--muted)}
