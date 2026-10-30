@@ -1,11 +1,13 @@
 @font-face{font-family:'Sora';src:url('../fonts/sora-latin.woff2') format('woff2');font-weight:100 800;font-display:swap}
 @font-face{font-family:'Public Sans';src:url('../fonts/public-sans-latin.woff2') format('woff2');font-weight:100 900;font-display:swap}
 
+@font-face{font-family:'Sora Fallback';src:local('Arial');size-adjust:108%;ascent-override:94%;descent-override:24%;line-gap-override:0%}
+@font-face{font-family:'Public Sans Fallback';src:local('Arial');size-adjust:103%;ascent-override:93%;descent-override:21%;line-gap-override:0%}
 :root{
   --navy:#0c3547;--navy-2:#0f3a50;--navy-3:#12425a;
   --amber:#efb046;--amber-ink:#8a5a00;--sky:#67bfe5;
   --white:#fff;--soft:#f3f6f7;--line:#dbe5e9;--muted:#37566a;--muted-2:#4d6b7a;
-  --font-head:'Sora',system-ui,sans-serif;--font-body:'Public Sans',system-ui,sans-serif;
+  --font-head:'Sora','Sora Fallback',system-ui,sans-serif;--font-body:'Public Sans','Public Sans Fallback',system-ui,sans-serif;
   --max:1200px;color-scheme:light;
 }
 *,*::before,*::after{box-sizing:border-box}
