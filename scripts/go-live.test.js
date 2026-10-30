@@ -6,6 +6,8 @@ const path = require('path');
 const { makeSite, page } = require('./testkit');
 const { goLive } = require('./go-live');
 
+const UMAMI = { head: '<script defer src="https://cloud.umami.is/script.js" data-website-id="abc"></script>' };
+
 test('weigert met placeholders en laat bestanden ongemoeid', () => {
   const dir = makeSite({ 'index.html': page('<p>[..]</p>') });
   assert.throws(() => goLive(dir, 'viasteven.nl'), /placeholder/);
@@ -14,7 +16,7 @@ test('weigert met placeholders en laat bestanden ongemoeid', () => {
 });
 
 test('zet live: noindex weg, canonical, CNAME, sitemap, robots', () => {
-  const dir = makeSite({ 'index.html': page('<p>x</p>'), 'contact.html': page('<p>y</p>'), '404.html': page('<p>z</p>') });
+  const dir = makeSite({ 'index.html': page('<p>x</p>', UMAMI), 'contact.html': page('<p>y</p>', UMAMI), '404.html': page('<p>z</p>') });
   goLive(dir, 'viasteven.nl');
   const index = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
   assert.ok(!index.includes('noindex'));
@@ -30,9 +32,33 @@ test('zet live: noindex weg, canonical, CNAME, sitemap, robots', () => {
 });
 
 test('is herhaalbaar', () => {
-  const dir = makeSite({ 'index.html': page('<p>x</p>') });
+  const dir = makeSite({ 'index.html': page('<p>x</p>', UMAMI), '404.html': page('<p>z</p>') });
   goLive(dir, 'viasteven.nl');
   const first = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
   goLive(dir, 'viasteven.nl');
   assert.strictEqual(fs.readFileSync(path.join(dir, 'index.html'), 'utf8'), first);
+  assert.strictEqual(fs.readFileSync(path.join(dir, '404.html'), 'utf8').split('<base ').length, 2);
+});
+
+test('schrijft og:url of werkt een bestaande bij', () => {
+  const dir = makeSite({
+    'index.html': page('<p>x</p>', UMAMI),
+    'contact.html': page('<p>y</p>', { head: UMAMI.head + '<meta property="og:url" content="https://oud.nl/">' }),
+  });
+  goLive(dir, 'viasteven.nl');
+  const index = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
+  assert.ok(index.includes('<meta property="og:url" content="https://viasteven.nl/">'));
+  const contact = fs.readFileSync(path.join(dir, 'contact.html'), 'utf8');
+  assert.ok(contact.includes('<meta property="og:url" content="https://viasteven.nl/contact.html">'));
+  assert.ok(!contact.includes('oud.nl'));
+  assert.strictEqual(contact.split('og:url').length, 2);
+});
+
+test('zet base href op de 404 en niet op de andere paginas', () => {
+  const dir = makeSite({ 'index.html': page('<p>x</p>', UMAMI), '404.html': page('<p>z</p>') });
+  goLive(dir, 'viasteven.nl');
+  const nf = fs.readFileSync(path.join(dir, '404.html'), 'utf8');
+  assert.ok(nf.includes('<base href="/">'));
+  assert.ok(nf.indexOf('<base href="/">') < nf.indexOf('</head>'));
+  assert.ok(!fs.readFileSync(path.join(dir, 'index.html'), 'utf8').includes('<base'));
 });

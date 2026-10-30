@@ -36,6 +36,33 @@ function attrsOf(tag) {
   return out;
 }
 
+function jsonStrings(value, out) {
+  if (typeof value === 'string') out.push(value);
+  else if (Array.isArray(value)) value.forEach((v) => jsonStrings(v, out));
+  else if (value && typeof value === 'object') Object.values(value).forEach((v) => jsonStrings(v, out));
+  return out;
+}
+
+// Tekst die niet zichtbaar is maar wel gelezen wordt: title, meta description,
+// content/alt/title-attributen en de strings in JSON-LD.
+function hiddenText(html) {
+  const parts = [];
+  const title = html.match(/<title>([^<]*)<\/title>/);
+  if (title) parts.push(title[1]);
+  for (const tag of html.match(/<[a-zA-Z][^>]*>/g) || []) {
+    const a = attrsOf(tag);
+    for (const k of ['content', 'alt', 'title']) if (a[k]) parts.push(a[k]);
+  }
+  for (const m of html.matchAll(/<script\s+type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
+    try {
+      parts.push(...jsonStrings(JSON.parse(m[1]), []));
+    } catch (e) {
+      // ongeldige JSON wordt apart gemeld
+    }
+  }
+  return parts.join(' | ');
+}
+
 function isExternal(url) {
   return /^(https?:)?\/\//i.test(url || '');
 }
@@ -45,6 +72,7 @@ function checkSite(root, { live = false, ignoreNoindex = false } = {}) {
   const warnings = [];
   const files = fs.readdirSync(root).filter((f) => f.endsWith('.html'));
   const local = (p) => path.join(root, p.split('?')[0].replace(/^\//, ''));
+  const hasCname = fs.existsSync(path.join(root, 'CNAME'));
   const htmls = {};
   const ids = {};
   for (const f of files) {
@@ -57,6 +85,8 @@ function checkSite(root, { live = false, ignoreNoindex = false } = {}) {
     const err = (m) => errors.push(`${f}: ${m}`);
     const warn = (m) => warnings.push(`${f}: ${m}`);
     const text = visibleText(html);
+    const hidden = hiddenText(html);
+    const allText = text + ' ' + hidden;
 
     if (!/<html[^>]*\slang="nl"/.test(html)) err('lang="nl" ontbreekt');
 
@@ -70,21 +100,21 @@ function checkSite(root, { live = false, ignoreNoindex = false } = {}) {
     if (h1s !== 1) err(`precies een h1 verwacht, gevonden ${h1s}`);
 
     if (/\u2014|\u2013|&mdash;|&ndash;/.test(html)) err('gedachtestreepje gevonden');
-    if (/\s-\s/.test(text)) err('" - " als zinsverbinder gevonden');
-    for (const { re, why } of FORBIDDEN) if (re.test(text)) err(`verboden: ${why}`);
+    if (/\s-\s/.test(allText)) err('" - " als zinsverbinder gevonden');
+    for (const { re, why } of FORBIDDEN) if (re.test(allText)) err(`verboden: ${why}`);
 
     for (const tag of html.match(/<img\b[^>]*>/gi) || []) {
       const a = attrsOf(tag);
       if (a.alt === undefined) err(`afbeelding zonder alt: ${a.src}`);
       if (isExternal(a.src)) err(`externe afbeelding: ${a.src}`);
-      else if (a.src && !a.src.startsWith('data:') && !fs.existsSync(local(a.src))) err(`afbeelding bestaat niet: ${a.src}`);
+      else if (a.src && !a.src.includes('{{') && !a.src.startsWith('data:') && !fs.existsSync(local(a.src))) err(`afbeelding bestaat niet: ${a.src}`);
     }
 
     for (const tag of html.match(/<(link|script|iframe|source)\b[^>]*>/gi) || []) {
       const name = tag.match(/^<(\w+)/)[1].toLowerCase();
       const a = attrsOf(tag);
       const url = a.src || a.href;
-      if (!url) continue;
+      if (!url || url.includes('{{')) continue;
       const rel = (a.rel || '').toLowerCase();
       if (isExternal(url)) {
         const relevant = name !== 'link' || /(stylesheet|preload|preconnect|prefetch|modulepreload)/.test(rel);
@@ -102,6 +132,7 @@ function checkSite(root, { live = false, ignoreNoindex = false } = {}) {
         if (!a['data-umami-event']) err(`data-umami-event ontbreekt op ${href}`);
         continue;
       }
+      if (href.includes('{{')) continue;
       if (isExternal(href) || /^javascript:/i.test(href)) continue;
       const [filePart, hash] = href.split('#');
       const target = filePart ? decodeURIComponent(filePart).replace(/^\//, '') : f;
@@ -120,13 +151,17 @@ function checkSite(root, { live = false, ignoreNoindex = false } = {}) {
       }
     }
 
-    const hasPlaceholder = /\[[^\]]{1,60}\]/.test(text) || /\{\{[A-Z_]+\}\}/.test(html);
+    const hasPlaceholder = /\[[^\]]{1,60}\]/.test(allText) || /\{\{[A-Z_]+\}\}/.test(html);
     if (hasPlaceholder) (live ? err : warn)('placeholder (bijvoorbeeld [..] of {{EMAIL}}) staat nog in de pagina');
+
+    if (live && !KEEP_NOINDEX.has(f) && !/<script\b[^>]*\ssrc="https:\/\/cloud\.umami\.is\/script\.js"/.test(html)) {
+      err('Umami-script ontbreekt op een live pagina');
+    }
 
     if (!ignoreNoindex) {
       const noindex = /<meta\s+name="robots"\s+content="[^"]*noindex/i.test(html);
       if (live && noindex && !KEEP_NOINDEX.has(f)) err('noindex staat nog op een live pagina');
-      if (!live && !noindex) err('noindex ontbreekt in voorbeeld');
+      if (!live && !noindex && !hasCname) err('noindex ontbreekt in voorbeeld');
     }
   }
 

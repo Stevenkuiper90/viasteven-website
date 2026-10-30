@@ -4,6 +4,7 @@ const path = require('path');
 const { checkSite } = require('./check');
 
 const KEEP_NOINDEX = new Set(['404.html']);
+const OG_URL = /<meta property="og:url" content="[^"]*">/;
 const NOINDEX_TAG = /\s*<meta name="robots" content="noindex">/g;
 
 function urlFor(domain, file) {
@@ -16,12 +17,24 @@ function goLive(root, domain) {
 
   const pages = fs.readdirSync(root).filter((f) => f.endsWith('.html'));
   for (const f of pages) {
-    if (KEEP_NOINDEX.has(f)) continue;
     const p = path.join(root, f);
+    if (KEEP_NOINDEX.has(f)) {
+      let nf = fs.readFileSync(p, 'utf8');
+      if (!/<base\s/i.test(nf)) {
+        const base = '<base href="/">';
+        nf = /<meta charset[^>]*>/i.test(nf)
+          ? nf.replace(/<meta charset[^>]*>/i, (m) => m + '\n' + base)
+          : nf.replace('<head>', () => '<head>\n' + base);
+        fs.writeFileSync(p, nf);
+      }
+      continue;
+    }
     let html = fs.readFileSync(p, 'utf8').replace(NOINDEX_TAG, '');
     if (!/rel="canonical"/.test(html)) {
       html = html.replace('</head>', () => `<link rel="canonical" href="${urlFor(domain, f)}">\n</head>`);
     }
+    const og = `<meta property="og:url" content="${urlFor(domain, f)}">`;
+    html = OG_URL.test(html) ? html.replace(OG_URL, () => og) : html.replace('</head>', () => `${og}\n</head>`);
     fs.writeFileSync(p, html);
   }
 
