@@ -83,6 +83,11 @@ p{margin:0}
 .card--dark .eyebrow{color:var(--amber)}
 .card p{color:var(--muted)}
 .card--dark p{color:#c3d4dc}
+.card-title{font-size:1.6rem}
+.card--dark .facts dd{color:#c3d4dc}
+.mock--small{padding:10px;box-shadow:none;margin-top:8px}
+.mock--small .mock-in{padding:14px;gap:12px}
+.mock--small .mock-head{flex-wrap:wrap;gap:8px;font-size:15px}
 
 .faq{border-top:1px solid var(--line)}
 .faq details{border-bottom:1px solid var(--line);padding:18px 0}
