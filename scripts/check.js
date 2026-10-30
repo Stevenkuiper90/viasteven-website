@@ -69,7 +69,7 @@ function checkSite(root, { live = false, ignoreNoindex = false } = {}) {
     const h1s = (html.match(/<h1[\s>]/g) || []).length;
     if (h1s !== 1) err(`precies een h1 verwacht, gevonden ${h1s}`);
 
-    if (/—|–|&mdash;|&ndash;/.test(html)) err('gedachtestreepje gevonden');
+    if (/2014|2013|&mdash;|&ndash;/.test(html)) err('gedachtestreepje gevonden');
     if (/\s-\s/.test(text)) err('" - " als zinsverbinder gevonden');
     for (const { re, why } of FORBIDDEN) if (re.test(text)) err(`verboden: ${why}`);
 

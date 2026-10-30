@@ -13,7 +13,7 @@ test('een geldige pagina geeft geen fouten', () => {
 });
 
 test('gedachtestreepje en " - " zijn fouten', () => {
-  const a = checkSite(makeSite({ 'index.html': page('<p>Dit — dat</p>') }));
+  const a = checkSite(makeSite({ 'index.html': page('<p>Dit 2014 dat</p>') }));
   assert.ok(has(a.errors, 'gedachtestreepje'));
   const b = checkSite(makeSite({ 'index.html': page('<p>Dit - dat</p>') }));
   assert.ok(has(b.errors, 'zinsverbinder'));
