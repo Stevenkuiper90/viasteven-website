@@ -1,0 +1,6 @@
+contact.local.json
+node_modules/
+*.log
+lh-*.json
+Thumbs.db
+.DS_Store

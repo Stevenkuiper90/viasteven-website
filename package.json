@@ -1,0 +1,11 @@
+{
+  "name": "viasteven-website",
+  "private": true,
+  "scripts": {
+    "test": "node --test \"scripts/*.test.js\"",
+    "build": "node scripts/sync-layout.js && node scripts/set-contact.js",
+    "check": "node scripts/check.js",
+    "check:live": "node scripts/check.js --live",
+    "serve": "python -m http.server 8080"
+  }
+}
