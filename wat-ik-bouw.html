@@ -26,7 +26,7 @@
   <p class="sub">Uren, werkbonnen, planning, offertes en cijfers in één omgeving, gekoppeld aan het pakket waar je al in boekt. Je past je werkwijze niet aan een standaardpakket aan. Ik bouw het rond hoe jij werkt.</p>
   <div class="modules">
    <div class="mod"><div class="ic">P</div><h3>Projecten</h3><p>Van offerte tot factuur. Begroot tegen werkelijk, per opdracht in één oogopslag.</p></div>
-   <div class="mod"><div class="ic">U</div><h3>Uren en werkbonnen</h3><p>Boeken op het project. Een werkbon met QR-code: scannen en de juiste bon opent.</p></div>
+   <div class="mod"><div class="ic">U</div><h3>Uren en werkbonnen</h3><p>Boeken op het project. Een werkbon met QR-code: scan hem en de juiste werkbon staat open.</p></div>
    <div class="mod"><div class="ic">▦</div><h3>Planning</h3><p>Mensen, materieel of ritten op een bord, dat ik samen met jou opzet.</p></div>
    <div class="mod"><div class="ic">O</div><h3>Offertes en relaties</h3><p>Offertes opvolgen, contactmomenten en acties per klant, met een seintje bij stilte.</p></div>
    <div class="mod"><div class="ic">I</div><h3>Inkoop</h3><p>Inkoop per leverancier en categorie, en wat er aan een project wordt doorbelast.</p></div>
@@ -38,10 +38,10 @@
   <div class="team">
    <h3>Voor je hele team, niet alleen voor de directeur.</h3>
    <div class="tg">
-    <div><b>Directie</b><p>Weet donderdag al hoe de maand loopt, met een seintje bij wat aandacht vraagt.</p></div>
-    <div><b>Financieel</b><p>Elk getal met bron en berekening. Nooit meer overtikken, jij blijft eigenaar van de definities.</p></div>
+    <div><b>Directie</b><p>Ziet tijdens de maand al hoe die loopt, met een seintje bij wat aandacht vraagt.</p></div>
+    <div><b>Financieel</b><p>Elk getal met bron en berekening. Minder overtikken, jij blijft eigenaar van de definities.</p></div>
     <div><b>Administratie en planning</b><p>Offertes, uren en planning op één plek die je meteen snapt, zonder dubbel invoeren.</p></div>
-    <div><b>Werkvloer</b><p>Een scan in plaats van overtikken, en een bord dat jullie zelf bijhouden. Geen scores over mensen.</p></div>
+    <div><b>Werkvloer</b><p>Een scan opent de juiste werkbon en de uren boek je direct op het project, met een bord dat jullie zelf bijhouden. Geen scores over mensen.</p></div>
    </div>
   </div>
   <div class="koppel">
@@ -56,7 +56,7 @@
    </div>
    <div class="ex2">
     <div><b>Leest mee</b><span>facturen, saldi, ritten, banktransacties</span></div>
-    <div><b class="gold">Schrijft terug of meldt, alleen als jij dat kiest</b><span>bijvoorbeeld uren naar de boekhouding, planning naar je agenda, en signalen en herinneringen als melding of conceptmail. Logboek en terugdraaien leggen we dan vast.</span></div>
+    <div><b class="gold">Schrijft terug of meldt, alleen als jij dat kiest</b><span>bijvoorbeeld uren naar de boekhouding, planning naar je agenda, en signalen en herinneringen als melding of conceptmail. Logboek en terugdraaien leg ik dan vast.</span></div>
    </div>
   </div>
   <details class="rights"><summary>Zo leg ik elke koppeling vast</summary>
@@ -69,7 +69,7 @@
    </ul></details>
   <div class="steps">
    <div class="step"><h3>Kennismaking</h3><p>Een eerste gesprek, gratis.</p></div>
-   <div class="step"><h3>Intake en bronscan</h3><p>Samen met je financiële collega en de gebruikers, kort en gepland rond jullie werk. Ik kijk welke systemen je gebruikt en wat je wilt weten.</p></div>
+   <div class="step"><h3>Kennismaken met je systemen</h3><p>Samen met je financiële collega en de gebruikers, kort en gepland rond jullie werk. Ik kijk welke systemen je gebruikt en wat je wilt weten.</p></div>
    <div class="step"><h3>Bouwen in stappen</h3><p>Na elke stap beslis jij of we doorgaan.</p></div>
    <div class="step"><h3>Overdracht</h3><p>Het werkt bij jou en je team kan ermee door.</p></div>
   </div>
@@ -83,7 +83,7 @@
    <p class="sub" style="font-size:15px">Wat als ik er niet ben? Je hebt de code, de documentatie en een back-up, dus elke ontwikkelaar kan verder.</p>
   </div>
   <details class="rights"><summary>Voor je beheerder en je accountant: lezen, AI en gegevens</summary><div class="ai"><b>Voor de beheerder van je systeem.</b> Een koppeling leest standaard alleen mee. Je ziet wat er gebeurt, en toegang is op elk moment in te trekken.</div>
-  <div class="ai"><b>AI en jouw gegevens.</b> Tijdens het bouwen gebruik ik geen echte bedrijfsdata, alleen de structuur en verzonnen testdata. Wil je AI inzetten, bijvoorbeeld om een gescand urenbriefje te lezen, dan kies jij dat en leggen we vast welke dienst, welke gegevens en hoe lang ze bewaard worden.</div></details>
+  <div class="ai"><b>AI en jouw gegevens.</b> Tijdens het bouwen gebruik ik geen echte bedrijfsdata, alleen de structuur en verzonnen testdata. Wil je AI inzetten, bijvoorbeeld om een gescand urenbriefje te lezen, dan kies jij dat en leg ik vast welke dienst, welke gegevens en hoe lang ze bewaard worden.</div></details>
  </div>
 </section>
 
@@ -117,7 +117,7 @@ function uren(){
  const r=[['26-2101 Oplegger',62,48],['26-2102 Cabine',44,33],['26-2104 Bus stralen',30,28],['26-2105 Aanhanger',26,26],['26-2108 Zijpaneel',10,7]];
  return `<div class="vw"><h4>Uren per project, begroot tegen geboekt</h4><div class="bars">`+r.map(([n,b,g])=>`<div class="r" style="grid-template-columns:130px 1fr 70px"><span>${n}</span><div class="t"><i style="width:${Math.round(g/b*100)}%;${g>=b?'background:#efb046':''}"></i></div><span>${g} van ${b}</span></div>`).join('')+`</div>
  <div class="legend"><span><i style="background:#67bfe5"></i>Binnen begroting</span><span><i style="background:#efb046"></i>Begroting bereikt</span></div>
- <div class="st"><span>Urenbriefjes gescand</span><span class="pill p-ok">34 van 36</span></div><div class="st"><span>Weekafsluiting</span><span class="pill p-i">Vrijdag</span></div></div>`;
+ <div class="st"><span>Werkbonnen gescand</span><span class="pill p-ok">34 van 36</span></div><div class="st"><span>Weekafsluiting</span><span class="pill p-i">Vrijdag</span></div></div>`;
 }
 function herleiden(){
  const rows=[['03-09','Verkoopfactuur F26-0412','Oplegger huisstijl','€ 6.850'],['09-09','Verkoopfactuur F26-0419','Cabine en spoilers','€ 4.900'],['17-09','Verkoopfactuur F26-0433','Bedrijfsbus stralen','€ 3.200'],['24-09','Verkoopfactuur F26-0441','Aanhanger renoveren','€ 2.750']];
@@ -147,7 +147,7 @@ function offertes(){
  <div class="st"><span>Slagingskans</span><span class="pill p-ok">38%</span></div><div class="st"><span>Wacht langer dan 14 dagen</span><span class="pill p-w">4 offertes</span></div></div>`;
 }
 const V={cijfers,uren,werkbon,planning,offertes,herleiden};
-const tabs=[['cijfers','Cijfers'],['herleiden','Herleiden'],['uren','Uren'],['werkbon','Werkbonnen'],['planning','Planning'],['offertes','Offertes']];
+const tabs=[['cijfers','Cijfers'],['herleiden','Herkomst'],['uren','Uren'],['werkbon','Werkbonnen'],['planning','Planning'],['offertes','Offertes']];
 function mount(el){
  el.innerHTML=`<div class="tabs">${tabs.map(([k,t],i)=>`<button class="tab${i?'':' on'}" data-k="${k}" style="border:0;cursor:pointer;font:inherit;font-weight:600">${t}</button>`).join('')}<span class="tag" style="margin-left:auto;align-self:center">Voorbeeld</span></div><div class="body">${cijfers()}</div>`;
  const body=el.querySelector('.body');
